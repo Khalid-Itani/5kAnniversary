@@ -42,18 +42,23 @@ Copy `.env.example` to `.env.local` and fill in:
 - `NEXT_PUBLIC_SITE_URL`: canonical site origin, without a trailing slash.
 - `NEXT_PUBLIC_SUPABASE_URL`: project URL; safe for the browser.
 - `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`: current Supabase publishable key.
-- `SUPABASE_SECRET_KEY`: server-only Supabase secret key. Never expose it with a
-  `NEXT_PUBLIC_` prefix.
 - `ADMIN_EMAIL`: the only email allowed to request an admin magic link.
 - `RESEND_API_KEY`: server-only Resend key.
 - `EMAIL_FROM`: sender on a domain verified in Resend.
 
+The connected Supabase project URL and publishable key also have safe public
+defaults in `src/lib/supabase/config.ts`, so a Vercel deployment can accept
+registrations before environment variables are added. Override those values in
+Vercel when rotating the publishable key or moving to another project. Never put
+a Supabase secret or service-role key in this file.
+
 ## Database setup
 
 Apply migrations in `supabase/migrations/` to the connected project. Public
-tables have row-level security enabled and direct `anon` / `authenticated`
-access revoked. Public forms write through validated Server Actions that use the
-server-only secret key; the browser never receives elevated credentials.
+tables have row-level security enabled. Public forms write through validated
+Server Actions using tightly limited anonymous insert policies. Authenticated
+reads and updates are restricted to the configured organizer email. No elevated
+database key is required by the application.
 
 ## Admin access
 

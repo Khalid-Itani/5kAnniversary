@@ -1,8 +1,8 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { headers } from "next/headers";
 import { redirect } from "next/navigation";
-import { createAdminClient } from "@/lib/supabase/admin";
 import { createUserClient } from "@/lib/supabase/server";
 import { siteConfig } from "@/lib/site";
 import type { FormState } from "@/lib/form-state";
@@ -22,10 +22,14 @@ export async function sendAdminMagicLink(
     return { status: "error", message: "Admin authentication is not configured yet." };
   }
 
+  const requestHeaders = await headers();
+  const requestOrigin = requestHeaders.get("origin");
+  const redirectOrigin = requestOrigin ?? siteConfig.siteUrl;
+
   const { error } = await supabase.auth.signInWithOtp({
     email,
     options: {
-      emailRedirectTo: `${siteConfig.siteUrl}/auth/callback?next=/admin`,
+      emailRedirectTo: `${redirectOrigin}/auth/callback?next=/admin`,
       shouldCreateUser: true,
     },
   });
@@ -46,20 +50,17 @@ async function requireAdmin() {
   if (data.user?.email?.toLowerCase() !== siteConfig.adminEmail.toLowerCase()) {
     throw new Error("Unauthorized");
   }
-  return data.user;
+  return userClient;
 }
 
 export async function updateDonationStatus(formData: FormData) {
-  await requireAdmin();
+  const supabase = await requireAdmin();
   const id = String(formData.get("id") ?? "");
   const status = String(formData.get("status") ?? "");
 
   if (!id || !["pending", "verified", "not_found", "refunded"].includes(status)) {
     throw new Error("Invalid update.");
   }
-
-  const supabase = createAdminClient();
-  if (!supabase) throw new Error("Supabase is not configured.");
 
   const { error } = await supabase
     .from("registrations")
@@ -74,15 +75,13 @@ export async function updateDonationStatus(formData: FormData) {
 }
 
 export async function updateBusinessStatus(formData: FormData) {
-  await requireAdmin();
+  const supabase = await requireAdmin();
   const id = String(formData.get("id") ?? "");
   const status = String(formData.get("status") ?? "");
   if (!id || !["new", "contacted", "confirmed", "declined"].includes(status)) {
     throw new Error("Invalid update.");
   }
 
-  const supabase = createAdminClient();
-  if (!supabase) throw new Error("Supabase is not configured.");
   const { error } = await supabase.from("business_inquiries").update({ status }).eq("id", id);
   if (error) throw new Error("Unable to update this inquiry.");
   revalidatePath("/admin");

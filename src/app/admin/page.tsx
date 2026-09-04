@@ -5,7 +5,6 @@ import {
   updateBusinessStatus,
   updateDonationStatus,
 } from "@/app/admin/auth-actions";
-import { createAdminClient } from "@/lib/supabase/admin";
 import { createUserClient } from "@/lib/supabase/server";
 import { hasSupabaseConfig, siteConfig } from "@/lib/site";
 
@@ -55,17 +54,15 @@ export default async function AdminPage() {
   }
 
   const userClient = await createUserClient();
-  const { data: userData } = (await userClient?.auth.getUser()) ?? { data: { user: null } };
+  if (!userClient) throw new Error("Supabase is not configured.");
+  const { data: userData } = await userClient.auth.getUser();
   if (userData.user?.email?.toLowerCase() !== siteConfig.adminEmail.toLowerCase()) {
     redirect("/admin/login");
   }
 
-  const supabase = createAdminClient();
-  if (!supabase) throw new Error("Supabase is not configured.");
-
   const [registrationResult, inquiryResult] = await Promise.all([
-    supabase.from("registrations").select("*").order("created_at", { ascending: false }),
-    supabase.from("business_inquiries").select("*").order("created_at", { ascending: false }),
+    userClient.from("registrations").select("*").order("created_at", { ascending: false }),
+    userClient.from("business_inquiries").select("*").order("created_at", { ascending: false }),
   ]);
 
   const registrations = (registrationResult.data ?? []) as Registration[];

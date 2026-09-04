@@ -1,7 +1,7 @@
 "use server";
 
-import { createAdminClient } from "@/lib/supabase/admin";
 import { sendRegistrationReceivedEmail } from "@/lib/email";
+import { createUserClient } from "@/lib/supabase/server";
 import {
   businessInquirySchema,
   firstValidationError,
@@ -23,7 +23,7 @@ export async function registerParticipant(
     return { status: "error", message: firstValidationError(parsed.error) };
   }
 
-  const supabase = createAdminClient();
+  const supabase = await createUserClient();
   if (!supabase) {
     return {
       status: "error",
@@ -32,22 +32,18 @@ export async function registerParticipant(
   }
 
   const input = parsed.data;
-  const { data, error } = await supabase
-    .from("registrations")
-    .insert({
-      first_name: input.firstName,
-      last_name: input.lastName,
-      email: input.email.toLowerCase(),
-      age_on_race_day: input.ageOnRaceDay,
-      city: input.city,
-      participation_type: input.participationType,
-      referral_source: input.referralSource || null,
-      donor_name: input.donorName,
-      amount_claimed: input.amountClaimed,
-      email_updates: input.emailUpdates,
-    })
-    .select("id")
-    .single();
+  const { error } = await supabase.from("registrations").insert({
+    first_name: input.firstName,
+    last_name: input.lastName,
+    email: input.email.toLowerCase(),
+    age_on_race_day: input.ageOnRaceDay,
+    city: input.city,
+    participation_type: input.participationType,
+    referral_source: input.referralSource || null,
+    donor_name: input.donorName,
+    amount_claimed: input.amountClaimed,
+    email_updates: input.emailUpdates,
+  });
 
   if (error) {
     if (error.code === "23505") {
@@ -65,11 +61,8 @@ export async function registerParticipant(
     firstName: input.firstName,
   });
 
-  if (data?.id) {
-    await supabase
-      .from("registrations")
-      .update({ email_status: emailResult.status })
-      .eq("id", data.id);
+  if (emailResult.status === "failed") {
+    console.error("Registration confirmation email failed");
   }
 
   return {
@@ -88,7 +81,7 @@ export async function submitBusinessInquiry(
     return { status: "error", message: firstValidationError(parsed.error) };
   }
 
-  const supabase = createAdminClient();
+  const supabase = await createUserClient();
   if (!supabase) {
     return {
       status: "error",

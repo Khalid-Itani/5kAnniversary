@@ -194,16 +194,16 @@ export default function Home() {
 
           <figure className="mt-10 overflow-hidden border border-black/20 bg-white p-2 shadow-[8px_8px_0_#090909] md:p-3">
             <Image
-              src="/images/course-map.jpg"
-              alt="Preview map of the 5K loop through Lincoln Park"
-              width={960}
-              height={632}
+              src="/images/course-map-refined.png"
+              alt="Coach Arena 5K course map showing the loop, parking, check-in, and start and finish locations in Lincoln Park"
+              width={1536}
+              height={1024}
               sizes="(max-width: 1280px) 100vw, 1216px"
               className="h-auto w-full"
             />
             <figcaption className="flex flex-col gap-1 px-2 py-3 text-xs text-[#6b6862] sm:flex-row sm:justify-between">
               <span>Lincoln Park, 1 County Road 605, Jersey City, NJ 07304</span>
-              <span>Course preview · final logistics forthcoming</span>
+              <span>Course, parking, check-in, and start/finish map</span>
             </figcaption>
           </figure>
         </div>

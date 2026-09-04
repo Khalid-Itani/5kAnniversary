@@ -39,7 +39,7 @@ There is no existing commit history from which to infer a convention. Use short,
 
 ## Security & Configuration
 
-Never commit secrets, credentials, or local environment files. Keep `.env.example` sanitized and document every required variable. Public forms must validate server-side. Supabase secret keys and Resend keys are server-only and must never use a `NEXT_PUBLIC_` prefix. Keep row-level security enabled and direct client access revoked for registration and business-inquiry data.
+Never commit secrets, credentials, or local environment files. Keep `.env.example` sanitized and document every required variable. Public forms must validate server-side. Resend keys are server-only and must never use a `NEXT_PUBLIC_` prefix. The Supabase publishable key is used with least-privilege grants and RLS; never add a secret or service-role key to public code.
 
 <!-- BEGIN:nextjs-agent-rules -->
 

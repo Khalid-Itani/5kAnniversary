@@ -1,4 +1,3 @@
-import { createAdminClient } from "@/lib/supabase/admin";
 import { createUserClient } from "@/lib/supabase/server";
 import { siteConfig } from "@/lib/site";
 
@@ -14,9 +13,8 @@ export async function GET() {
     return new Response("Unauthorized", { status: 401 });
   }
 
-  const supabase = createAdminClient();
-  if (!supabase) return new Response("Not configured", { status: 503 });
-  const { data: rows, error } = await supabase
+  if (!userClient) return new Response("Not configured", { status: 503 });
+  const { data: rows, error } = await userClient
     .from("registrations")
     .select("first_name,last_name,email,age_on_race_day,city,participation_type,referral_source,donor_name,amount_claimed,donation_status,email_updates,email_status,created_at")
     .order("created_at", { ascending: false });
