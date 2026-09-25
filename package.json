@@ -8,7 +8,15 @@
     "start": "next start",
     "lint": "eslint",
     "typecheck": "tsc --noEmit",
-    "test": "vitest run"
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "check": "npm run lint && npm run typecheck && npm test",
+    "test:stack:start": "node scripts/test-stack.mjs start",
+    "test:stack:stop": "node scripts/test-stack.mjs stop",
+    "test:e2e": "playwright test",
+    "test:smoke": "playwright test --project=desktop --project=mobile tests/e2e/public.spec.ts",
+    "test:e2e:ui": "playwright test --ui",
+    "test:report": "playwright show-report"
   },
   "dependencies": {
     "@supabase/ssr": "0.12.5",
@@ -21,6 +29,7 @@
     "zod": "4.5.4"
   },
   "devDependencies": {
+    "@playwright/test": "1.63.0",
     "@tailwindcss/postcss": "^4",
     "@testing-library/jest-dom": "7.0.1",
     "@testing-library/react": "16.3.3",
@@ -31,6 +40,7 @@
     "eslint": "^9",
     "eslint-config-next": "16.3.4",
     "jsdom": "30.0.1",
+    "supabase": "2.118.0",
     "tailwindcss": "^4",
     "typescript": "^5",
     "vitest": "4.1.11"

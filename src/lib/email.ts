@@ -1,6 +1,47 @@
 import "server-only";
 import { Resend } from "resend";
 import { siteConfig } from "@/lib/site";
+import type { z } from "zod";
+import type { businessInquirySchema } from "@/lib/validation";
+
+export async function sendBusinessInquiryEmail(
+  input: z.infer<typeof businessInquirySchema>,
+) {
+  const apiKey = process.env.RESEND_API_KEY;
+  const from = process.env.EMAIL_FROM;
+  if (!apiKey || !from) return { status: "skipped" as const };
+
+  const resend = new Resend(apiKey);
+  const text = [
+    "New Coach Arena 5K business inquiry",
+    "",
+    `Business: ${input.businessName}`,
+    `Contact: ${input.contactName}`,
+    `Email: ${input.email}`,
+    `Phone: ${input.phone || "Not provided"}`,
+    `City: ${input.city || "Not provided"}`,
+    `Interest: ${input.interestType.replaceAll("_", " ")}`,
+    "",
+    "Message:",
+    input.message,
+    "",
+    `Review and update status: ${siteConfig.siteUrl}/admin`,
+  ].join("\n");
+
+  try {
+    const { error } = await resend.emails.send({
+      from,
+      to: siteConfig.contactEmail,
+      replyTo: input.email,
+      subject: "New Coach Arena 5K business inquiry",
+      text,
+    });
+    return { status: error ? ("failed" as const) : ("sent" as const) };
+  } catch {
+    // A delivery outage must not turn a saved inquiry into a failed submission.
+    return { status: "failed" as const };
+  }
+}
 
 function escapeHtml(value: string) {
   return value
