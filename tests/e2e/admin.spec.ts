@@ -33,7 +33,12 @@ test("database denies public reads and privileged inserts; non-organizers cannot
   const { admin, anon } = database();
   expect((await anon.from("registrations").select("*")).error).not.toBeNull();
   expect((await anon.from("business_inquiries").select("*")).error).not.toBeNull();
-  expect((await anon.from("registrations").insert({ donation_status: "verified" })).error).not.toBeNull();
+  const unauthorizedInsert = await anon.from("registrations").insert({
+    first_name: "Unauthorized", last_name: "Test", email: `blocked-${randomUUID()}@example.com`,
+    age_on_race_day: 30, city: "Test", participation_type: "run", donor_name: "Test",
+    amount_claimed: 20, donation_status: "verified",
+  });
+  expect(unauthorizedInsert.error?.code).toBe("42501");
   const email = `protected-${randomUUID()}@example.com`;
   const record = await admin.from("registrations").insert({ first_name: "Private", last_name: "Test", email,
     age_on_race_day: 30, city: "Test", participation_type: "run", donor_name: "Test", amount_claimed: 20 }).select().single();
