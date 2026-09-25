@@ -1,7 +1,6 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { createUserClient } from "@/lib/supabase/server";
 import { siteConfig } from "@/lib/site";
@@ -22,14 +21,10 @@ export async function sendAdminMagicLink(
     return { status: "error", message: "Admin authentication is not configured yet." };
   }
 
-  const requestHeaders = await headers();
-  const requestOrigin = requestHeaders.get("origin");
-  const redirectOrigin = requestOrigin ?? siteConfig.siteUrl;
-
   const { error } = await supabase.auth.signInWithOtp({
     email,
     options: {
-      emailRedirectTo: `${redirectOrigin}/auth/callback?next=/admin`,
+      emailRedirectTo: `${siteConfig.siteUrl}/auth/callback?next=/admin`,
       shouldCreateUser: true,
     },
   });

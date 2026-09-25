@@ -1,7 +1,7 @@
 "use server";
 
-import { sendRegistrationReceivedEmail } from "@/lib/email";
-import { createUserClient } from "@/lib/supabase/server";
+import { sendBusinessInquiryEmail, sendRegistrationReceivedEmail } from "@/lib/email";
+import { createPublicSubmissionClient } from "@/lib/supabase/server";
 import {
   businessInquirySchema,
   firstValidationError,
@@ -23,7 +23,7 @@ export async function registerParticipant(
     return { status: "error", message: firstValidationError(parsed.error) };
   }
 
-  const supabase = await createUserClient();
+  const supabase = createPublicSubmissionClient();
   if (!supabase) {
     return {
       status: "error",
@@ -81,7 +81,7 @@ export async function submitBusinessInquiry(
     return { status: "error", message: firstValidationError(parsed.error) };
   }
 
-  const supabase = await createUserClient();
+  const supabase = createPublicSubmissionClient();
   if (!supabase) {
     return {
       status: "error",
@@ -103,6 +103,11 @@ export async function submitBusinessInquiry(
   if (error) {
     console.error("Business inquiry insert failed", error.code);
     return { status: "error", message: "We could not save your message. Please try again." };
+  }
+
+  const emailResult = await sendBusinessInquiryEmail(input);
+  if (emailResult.status !== "sent") {
+    console.error("Business inquiry notification not sent", emailResult.status);
   }
 
   return {
