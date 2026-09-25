@@ -8,8 +8,8 @@ the Robert Arena Scholarship for Hudson County students.
 
 - Next.js 16 App Router, React 19, TypeScript, and Tailwind CSS 4
 - Supabase Postgres and passwordless organizer authentication
-- Resend for registration confirmation email
-- Vercel for eventual hosting
+- Resend for organizer sign-in emails and business inquiry notifications
+- Vercel for production hosting and preview deployments
 - GoFundMe for all donation processing
 
 This site never collects card information. A participant donates at least $20 on
