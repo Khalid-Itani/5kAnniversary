@@ -110,16 +110,16 @@ the default branch. A local YAML file does not run on GitHub until pushed.
 
 ## Enforce the release gate
 
-At setup inspection, `main` was unprotected. In GitHub Settings → Rules →
-Rulesets (or Branches), protect `main`, require a pull request and require:
+The `main` branch is protected in GitHub and requires a pull request plus:
 
 - `Quality checks`
 - `Browser and database regression`
 
-Require the branch to be up to date, and prevent direct pushes/bypasses as
-appropriate for the repository owner. These are GitHub repository settings,
-not settings that a workflow file can turn on. Until configured, a failing CI
-job does not prevent a direct main push and its Vercel deployment.
+The branch must be up to date and PR conversations resolved. These rules apply
+to the owner too; force pushes and branch deletion are blocked. A second
+reviewer's approval is not required. These are GitHub repository settings,
+not settings that a workflow file can turn on. Direct Vercel CLI deployments
+are separate and are not blocked by GitHub branch protection.
 
 Vercel previews need their own database configuration to test writes; otherwise
 they show setup errors. CI runs a complete isolated app and database regardless.
