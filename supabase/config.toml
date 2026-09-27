@@ -1,0 +1,22 @@
+# Production authentication settings. Secrets are supplied through the environment.
+project_id = "coach-arena-5k"
+
+[auth]
+site_url = "https://coacharena5k.com"
+additional_redirect_urls = ["https://coacharena5k.com/auth/callback?next=/admin"]
+
+[auth.rate_limit]
+# Custom SMTP supports normal organizer sign-in traffic beyond the trial limit.
+email_sent = 10
+
+[auth.email]
+enable_confirmations = true
+
+[auth.email.smtp]
+enabled = true
+host = "smtp.resend.com"
+port = 465
+user = "resend"
+pass = "env(RESEND_API_KEY)"
+admin_email = "notifications@coacharena5k.com"
+sender_name = "Coach Arena 5K"

@@ -1,0 +1,23 @@
+# Isolated Docker stack; never copied from production SMTP settings.
+project_id = "coach-arena-tests"
+[api]
+port = 54321
+schemas = ["public", "graphql_public"]
+[db]
+port = 54322
+major_version = 17
+[studio]
+enabled = false
+[inbucket]
+enabled = true
+port = 54324
+[auth]
+site_url = "http://127.0.0.1:3100"
+additional_redirect_urls = ["http://127.0.0.1:3100/auth/callback?next=/admin"]
+[auth.email]
+enable_confirmations = true
+max_frequency = "1s"
+[auth.rate_limit]
+email_sent = 100
+[analytics]
+enabled = false

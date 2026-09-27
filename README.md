@@ -8,8 +8,8 @@ the Robert Arena Scholarship for Hudson County students.
 
 - Next.js 16 App Router, React 19, TypeScript, and Tailwind CSS 4
 - Supabase Postgres and passwordless organizer authentication
-- Resend for registration confirmation email
-- Vercel for eventual hosting
+- Resend for organizer sign-in emails and business inquiry notifications
+- Vercel for production hosting and preview deployments
 - GoFundMe for all donation processing
 
 This site never collects card information. A participant donates at least $20 on
@@ -46,11 +46,10 @@ Copy `.env.example` to `.env.local` and fill in:
 - `RESEND_API_KEY`: server-only Resend key.
 - `EMAIL_FROM`: sender on a domain verified in Resend.
 
-The connected Supabase project URL and publishable key also have safe public
-defaults in `src/lib/supabase/config.ts`, so a Vercel deployment can accept
-registrations before environment variables are added. Override those values in
-Vercel when rotating the publishable key or moving to another project. Never put
-a Supabase secret or service-role key in this file.
+Database configuration is required explicitly for every environment. An
+unconfigured preview never falls back to production. Configure a separate
+Supabase project before using hosted previews for submissions. Never put a
+Supabase secret or service-role key in public application code.
 
 ## Database setup
 
@@ -66,7 +65,25 @@ Open `/admin/login` and request a magic link using the configured `ADMIN_EMAIL`.
 The dashboard shows registrations and business inquiries, supports manual
 donation-status updates, and exports registrations as CSV.
 
+For the production Supabase project, set the Auth Site URL to
+`https://coacharena5k.com` and allow the exact redirect
+`https://coacharena5k.com/auth/callback?next=/admin`. Configure custom SMTP using
+the verified Resend sender: host `smtp.resend.com`, port `465`, username
+`resend`, and the Resend API key as the SMTP password. Keep email confirmation
+enabled. Admin access remains restricted to `5kyearrun@gmail.com` by both the
+application and database policies.
+
+Business inquiries are saved before an email notification is attempted. Set
+`RESEND_API_KEY` and `EMAIL_FROM` in Vercel production to enable notifications
+to `5kyearrun@gmail.com`. Messages contain the business/contact names, email,
+phone, city, interest category, and message; Reply-To points to the submitter.
+If delivery fails, the inquiry remains in the dashboard and the server logs
+record the failure. There is currently no automatic retry queue.
+
 ## Deployment
+
+See [Testing and release workflow](docs/testing-and-releases.md) for local
+commands, regression coverage, GitHub Actions, and the current deployment rules.
 
 The repository is intended for Vercel. Configure every environment variable in
 Vercel before deploying, set `NEXT_PUBLIC_SITE_URL` to the final HTTPS origin,
