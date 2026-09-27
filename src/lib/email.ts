@@ -68,6 +68,7 @@ export async function sendRegistrationReceivedEmail(input: {
   const { error } = await resend.emails.send({
     from,
     to: input.email,
+    replyTo: siteConfig.contactEmail,
     subject: "We received your Coach Arena 5K registration",
     html: `
       <div style="font-family:Arial,sans-serif;color:#111;line-height:1.6;max-width:600px;margin:auto">

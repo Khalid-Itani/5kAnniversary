@@ -8,7 +8,7 @@ vi.mock("resend", () => ({
 vi.mock("@/lib/site", () => ({
   siteConfig: { contactEmail: "5kyearrun@gmail.com", siteUrl: "https://coacharena5k.com" },
 }));
-import { sendBusinessInquiryEmail } from "./email";
+import { sendBusinessInquiryEmail, sendRegistrationReceivedEmail } from "./email";
 
 const inquiry = {
   businessName: "Hudson Cafe",
@@ -20,6 +20,24 @@ const inquiry = {
   message: "We can provide water.\nPlease contact us.",
   website: "",
 };
+
+describe("registration receipt", () => {
+  afterEach(() => vi.unstubAllEnvs());
+
+  it("routes participant replies to the organizer mailbox while keeping the verified sender", async () => {
+    vi.stubEnv("RESEND_API_KEY", "test-key");
+    vi.stubEnv("EMAIL_FROM", "Coach Arena <notifications@coacharena5k.com>");
+    send.mockReset().mockResolvedValue({ error: null });
+
+    expect(await sendRegistrationReceivedEmail({ email: "runner@example.com", firstName: "Runner" }))
+      .toEqual({ status: "sent" });
+    expect(send).toHaveBeenCalledWith(expect.objectContaining({
+      from: "Coach Arena <notifications@coacharena5k.com>",
+      to: "runner@example.com",
+      replyTo: "5kyearrun@gmail.com",
+    }));
+  });
+});
 
 describe("business inquiry notification", () => {
   beforeEach(() => {
