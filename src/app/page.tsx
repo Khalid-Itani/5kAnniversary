@@ -184,7 +184,7 @@ export default function Home() {
             </div>
             <a
               className="button-secondary"
-              href="https://www.google.com/maps/search/?api=1&query=Lincoln+Park+1+County+Road+605+Jersey+City+NJ+07304"
+              href="https://www.google.com/maps/place/Lincoln+Park+Parking+Lot+-+A/@40.7252472,-74.0854009,17z/data=!4m14!1m7!3m6!1s0x89c2512d9c1581af:0xa836420cb4f7015f!2sLincoln+Park!8m2!3d40.7252432!4d-74.082826!16s%2Fm%2F0gwyj_q!3m5!1s0x89c2513e5245c64d:0x66e03c850b4ed64a!8m2!3d40.7298107!4d-74.0847333!16s%2Fg%2F11rsv19wnk?entry=ttu&g_ep=EgoyMDI2MDkyMy4wIKXMDSoASAFQAw%3D%3D"
               target="_blank"
               rel="noreferrer"
             >
@@ -194,10 +194,10 @@ export default function Home() {
 
           <figure className="mt-10 overflow-hidden border border-black/20 bg-white p-2 shadow-[8px_8px_0_#090909] md:p-3">
             <Image
-              src="/images/course-map-refined.png"
+              src="/images/course-map-final.jpg"
               alt="Coach Arena 5K course map showing the loop, parking, check-in, and start and finish locations in Lincoln Park"
-              width={1536}
-              height={1024}
+              width={1024}
+              height={723}
               sizes="(max-width: 1280px) 100vw, 1216px"
               className="h-auto w-full"
             />
