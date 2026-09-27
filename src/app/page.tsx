@@ -98,7 +98,7 @@ export default function Home() {
       <section aria-label="Event summary" className="bg-[#ff5a12] text-black">
         <div className="shell grid divide-y divide-black/25 sm:grid-cols-3 sm:divide-x sm:divide-y-0">
           {[
-            ["When", "Sunday · 10:00 AM"],
+            ["When", "Sunday · October 18 · 10:00 AM"],
             ["Where", "Lincoln Park · Jersey City"],
             ["Entry", "$20 minimum donation"],
           ].map(([label, value]) => (
