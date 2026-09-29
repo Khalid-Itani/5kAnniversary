@@ -6,11 +6,6 @@ Vercel project `coach-arena-5k` is linked to `Khalid-Itani/5kAnniversary`, with
 `main` configured as its production branch. A push/merge to `main` can deploy
 production. Other branches get Vercel previews.
 
-The September recovery fixes were deployed using `vercel deploy --prod` from
-the local working directory. That uploads files even if they are uncommitted.
-Saving, staging, or committing locally does not itself update the live site.
-This is why the live site had fixes that GitHub did not yet contain.
-
 The new GitHub workflow runs tests; it does not deploy or change production
 credentials. `vercel.json` additionally runs lint, TypeScript and Vitest before
 Vercel builds. Full browser checks must be required on the PR before merging.

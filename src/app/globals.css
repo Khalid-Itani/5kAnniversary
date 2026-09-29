@@ -72,6 +72,52 @@ textarea {
   text-transform: uppercase;
 }
 
+@media (min-width: 1024px) {
+  .home-hero {
+    background: radial-gradient(ellipse at 78% 42%, #502512 0%, #1b1410 30%, #090909 65%);
+  }
+
+  .home-hero-layout {
+    position: relative;
+    min-height: max(620px, calc(100svh - 81px));
+    width: min(100% - 5rem, 84rem);
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .home-hero-copy {
+    padding-block: 3rem;
+    align-self: center;
+  }
+
+  .home-hero-title {
+    font-size: clamp(4.5rem, 7.5vw, 7rem);
+    white-space: nowrap;
+  }
+
+  .home-hero-copy > p:not(:first-child) {
+    max-width: 30rem;
+  }
+
+  .home-hero-portrait {
+    position: absolute;
+    inset: 0 -4% 0 auto;
+    width: 62%;
+    min-height: 0;
+  }
+
+  .home-hero-image {
+    object-fit: cover;
+    object-position: center top;
+    padding-top: 2rem;
+  }
+
+  .home-hero-caption {
+    left: 20%;
+    right: 10%;
+    padding-bottom: 2.5rem;
+  }
+}
+
 .eyebrow::before {
   width: 1.75rem;
   height: 0.2rem;

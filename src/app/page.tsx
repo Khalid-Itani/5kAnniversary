@@ -38,14 +38,14 @@ const faqs = [
 export default function Home() {
   return (
     <main id="main-content">
-      <section className="overflow-hidden bg-[#090909] text-white">
-        <div className="shell grid min-h-[calc(100svh-5rem)] items-stretch lg:grid-cols-[1.08fr_0.92fr]">
-          <div className="relative z-10 flex flex-col justify-center py-16 lg:py-24 lg:pr-16">
+      <section className="home-hero overflow-hidden bg-[#090909] text-white">
+        <div className="home-hero-layout shell grid items-stretch">
+          <div className="home-hero-copy relative z-10 flex flex-col justify-center py-16">
             <p className="mb-7 flex items-center gap-3 font-[family-name:var(--font-display)] text-sm font-extrabold uppercase tracking-[0.16em] text-[#ff5a12]">
               <span className="h-1 w-8 bg-[#ff5a12]" />
               October 18, 2026 · Jersey City
             </p>
-            <h1 className="display-type max-w-4xl text-[clamp(4.8rem,18vw,10rem)] leading-[0.77]">
+            <h1 className="home-hero-title display-type max-w-4xl text-[clamp(4.8rem,18vw,10rem)] leading-[0.85]">
               Five years.
               <span className="block text-[#ff5a12]">One legacy.</span>
             </h1>
@@ -72,17 +72,37 @@ export default function Home() {
             </p>
           </div>
 
-          <div className="relative min-h-[34rem] border-x border-white/15 lg:min-h-full lg:border-r lg:border-l">
+          <div className="home-hero-portrait relative isolate min-h-[34rem] overflow-hidden sm:min-h-[42rem]">
+            <div
+              aria-hidden="true"
+              className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_35%,#713014_0%,#241b17_45%,#090909_85%)] lg:hidden"
+            />
+            <svg
+              aria-hidden="true"
+              className="absolute inset-0 h-full w-full text-[#ff5a12]/15"
+              viewBox="0 0 560 800"
+              fill="none"
+              preserveAspectRatio="xMidYMid slice"
+            >
+              {[0, 44, 88, 132].map((offset) => (
+                <path
+                  key={offset}
+                  d={`M ${620 - offset} -80 V 340 Q ${620 - offset} ${590 - offset} ${330 - offset} ${590 - offset} H -80`}
+                  stroke="currentColor"
+                  strokeWidth="2"
+                />
+              ))}
+            </svg>
             <Image
-              src="/images/coach-arena.jpg"
+              src="/images/coach-arena-cutout.png"
               alt="Coach Robert Arena wearing his orange Snyder Track jacket"
               fill
-              priority
-              sizes="(max-width: 1024px) 100vw, 46vw"
-              className="object-cover object-[center_30%]"
+              preload
+              sizes="(max-width: 1023px) calc(100vw - 2rem), (max-width: 1440px) 62vw, 830px"
+              className="home-hero-image object-contain object-bottom pt-8"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
-            <div className="absolute right-0 bottom-0 left-0 flex items-end justify-between p-6 md:p-8">
+            <div className="absolute inset-0 bg-gradient-to-t from-[#090909] via-transparent to-transparent" />
+            <div className="home-hero-caption absolute right-0 bottom-0 left-0 flex items-end justify-between p-6 md:p-8">
               <div>
                 <p className="text-xs font-bold uppercase tracking-[0.16em] text-[#ff5a12]">
                   In memory of
@@ -170,6 +190,41 @@ export default function Home() {
         </div>
       </section>
 
+      <section aria-labelledby="partner-heading" className="border-b border-black/15 py-9 md:py-10">
+        <div className="shell grid gap-6 md:grid-cols-[12rem_1fr] md:items-center lg:grid-cols-[14rem_1fr_auto] lg:gap-9">
+          <div className="relative h-24 w-56 max-w-full overflow-hidden bg-black md:w-full">
+            <Image
+              src="/images/embrace-logo.png"
+              alt="EMBRACE"
+              width={1271}
+              height={1271}
+              sizes="224px"
+              className="absolute top-1/2 h-auto w-full -translate-y-[57%]"
+            />
+          </div>
+          <div>
+            <p className="eyebrow text-xs">Our nonprofit partner</p>
+            <h2 id="partner-heading" className="display-type mt-2 text-3xl">
+              In partnership with EMBRACE
+            </h2>
+            <p className="mt-3 max-w-2xl text-sm leading-6 text-[#5d5952]">
+              EMBRACE supports people with autism and developmental disabilities
+              and their families through recreation, education, and advocacy in
+              New Jersey and Florida.
+            </p>
+          </div>
+          <a
+            className="button-secondary justify-self-start md:col-start-2 lg:col-start-auto"
+            href="https://www.weembraceu.org/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Visit EMBRACE <span aria-hidden="true" className="ml-3">↗</span>
+            <span className="sr-only"> (opens in a new tab)</span>
+          </a>
+        </div>
+      </section>
+
       <section id="course" className="reveal py-20 md:py-28">
         <div className="shell">
           <div className="grid gap-7 md:grid-cols-[1fr_auto] md:items-end">
@@ -193,14 +248,17 @@ export default function Home() {
           </div>
 
           <figure className="mt-10 overflow-hidden border border-black/20 bg-white p-2 shadow-[8px_8px_0_#090909] md:p-3">
-            <Image
-              src="/images/course-map-final.jpg"
-              alt="Coach Arena 5K course map showing the loop, parking, check-in, and start and finish locations in Lincoln Park"
-              width={1024}
-              height={723}
-              sizes="(max-width: 1280px) 100vw, 1216px"
-              className="h-auto w-full"
-            />
+            {/* Hide the caption baked into the image; the accessible caption follows. */}
+            <div className="aspect-[1024/678] overflow-hidden">
+              <Image
+                src="/images/course-map-final.jpg"
+                alt="Coach Arena 5K course map showing the loop, parking, check-in, and start and finish locations in Lincoln Park"
+                width={1024}
+                height={723}
+                sizes="(max-width: 1280px) 100vw, 1216px"
+                className="h-auto w-full"
+              />
+            </div>
             <figcaption className="flex flex-col gap-1 px-2 py-3 text-xs text-[#6b6862] sm:flex-row sm:justify-between">
               <span>Lincoln Park, 1 County Road 605, Jersey City, NJ 07304</span>
               <span>Course, parking, check-in, and start/finish map</span>

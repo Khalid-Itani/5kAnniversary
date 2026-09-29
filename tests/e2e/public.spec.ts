@@ -1,5 +1,15 @@
 import { test, expect } from "@playwright/test";
 
+test("homepage introduces the nonprofit partner and links to its website", async ({ page }) => {
+  await page.goto("/");
+  const partner = page.getByRole("region", { name: "In partnership with EMBRACE" });
+  await expect(partner.getByRole("img", { name: "EMBRACE" })).toBeVisible();
+  const website = partner.getByRole("link", { name: /Visit EMBRACE/ });
+  await expect(website).toHaveAttribute("href", "https://www.weembraceu.org/");
+  await expect(website).toHaveAttribute("target", "_blank");
+  await expect(website).toHaveAttribute("rel", "noopener noreferrer");
+});
+
 test("public pages load on desktop and mobile without horizontal overflow", async ({ page }) => {
   for (const route of ["/", "/register", "/businesses", "/privacy", "/admin/login"]) {
     const response = await page.goto(route);
